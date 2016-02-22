@@ -7,40 +7,46 @@ class GuessTheNumber:
     logs the number to a file for future use.
     """
 
-    def __init__(self, low, high):
-        self.test = False
-        self.check_win = True
-        self.player_name = input("Hello! Whats your name?\n")
+    def __init__(self, player_name, low, high):
+        self.player_name = player_name
         self.low = int(low)
         self.high = int(high)
         self.com_guess = 1
 
     def start(self):
-        print('Think of a number between {} and {}.'.format(self.low, self.high))
+        print('Hi {}!\nThink of a number between {} and {}.'.format(self.player_name, self.low, self.high))
         self.main_loop()
 
     def generate_guess(self):
         self.com_guess = random.randint(self.low, self.high)
 
     def main_loop(self):
-        while self.check_win is False:
+        while True:
             self.generate_guess()
-            while self.test is False:
-                var1 = input('Is {} your number, {}?\n(y/n): '.format(self.com_guess, self.player_name))
-                if var1.lower() == 'y' or var1.lower() == 'n':
-                    self.test = True
+            while True:
+                var1 = input("Is {} your number, {}?\n(y/n): ".format(self.com_guess, self.player_name)).lower()
+                if var1 == 'y' or var1 == 'n':
+                    break
                 else:
-                    self.test = False
-            if var1.lower() == 'y':
-                pass
-            elif var1.lower() == 'n':
-                var2 = input('Is your number higher?\n(y/n): ')
-                if var2.lower() == 'y':
+                    print('Invalid input.')
+            if var1 == 'y':
+                break
+            else:
+                while True:
+                    var2 = input('Is your number bigger?\n(y/n): ').lower()
+                    if var2 == 'y' or var2 == 'n':
+                        break
+                    else:
+                        print('Invalid input.')
+                if var2 == 'y':
                     self.low = self.com_guess
-                    self.test = False
                 else:
                     self.high = self.com_guess
+            if self.low == self.high:
+                print("I think you are lying to me...")
+                break
         self.write_to_file()
+        print('Thanks for playing!')
 
     def write_to_file(self):
         with open('GuessTheNumber_Answers.txt', 'a') as f:
@@ -48,7 +54,8 @@ class GuessTheNumber:
 
 
 def main():
-    game = GuessTheNumber("1", "50")
+    player_name = input("Hello! Whats your name?\n")
+    game = GuessTheNumber(player_name, "1", "50")
     game.start()
 
 
